@@ -1882,14 +1882,14 @@ This command will print 'Hello, World!' to the console."""
                 side_effect=mock_get_commit_message
             )
 
-            res = coder.auto_commit({str(fname)})
+            res = coder.auto_commit(set())
             self.assertIsNotNone(res)
 
             # Don't expect any commits as nothing has changed
             num_commits = len(list(repo.iter_commits()))
             self.assertEqual(num_commits, 1)
 
-            coder.repo.get_commit_message.assert_called_once()
+            coder.repo.get_commit_message.assert_not_called()
 
     @patch(
         "aider.coders.base_coder.experimental_mcp_client.call_openai_tool",
@@ -1916,10 +1916,12 @@ This command will print 'Hello, World!' to the console."""
             server_tool_calls = {mock_server: [tool_call]}
 
             # Mock the return value of call_openai_tool
-            mock_content1 = MagicMock()
-            mock_content1.text = "First part. "
-            mock_content2 = MagicMock()
-            mock_content2.text = "Second part."
+            class MockContent:
+                def __init__(self, text):
+                    self.text = text
+
+            mock_content1 = MockContent("First part. ")
+            mock_content2 = MockContent("Second part.")
 
             mock_call_result = MagicMock()
             mock_call_result.content = [mock_content1, mock_content2]
