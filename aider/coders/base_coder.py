@@ -2006,7 +2006,7 @@ class Coder:
                                                     f"[embedded binary resource: {name} ({mime_type})]"
                                                 )
                                     elif hasattr(item, "text"):  # TextContent
-                                        content_parts.append(item.text)
+                                            content_parts.append(str(item.text))
 
                             result_text = "".join(content_parts)
                             all_results_content.append(result_text)
